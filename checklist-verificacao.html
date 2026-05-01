@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificação Pós-Limpeza — Alojamento Local</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FDFAF4;
+    --ink: #1A1814;
+    --mid: #6B6560;
+    --accent: #C84B2F;
+    --accent-light: #F0D5CE;
+    --gold: #B8923A;
+    --ok: #1A6B3A;
+    --nok: #C84B2F;
+    --na: #6B6560;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    text-align: center;
+    padding: 48px 0 40px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 32px;
+  }
+
+  .header-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--mid);
+    margin-top: 12px;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  /* APARTMENT PANEL */
+  .apt-panel {
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 520px) { .apt-panel { grid-template-columns: 1fr; } }
+
+  .apt-field { display: flex; align-items: center; gap: 12px; }
+
+  .apt-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-light);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .apt-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+
+  .apt-input {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+    border-bottom: 1.5px solid #C8C0B0;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .apt-input:focus { border-bottom-color: var(--accent); }
+  .apt-input::placeholder { color: #C8C0B0; font-style: italic; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    align-items: center;
+  }
+
+  .legend-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-right: 8px;
+  }
+
+  .leg-item {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .leg-ok  { background: #D4EDDA; color: var(--ok); }
+  .leg-nok { background: var(--accent-light); color: var(--nok); }
+  .leg-na  { background: #E8E2D6; color: var(--na); }
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1.5px solid var(--ink);
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--ink); color: var(--warm-white); }
+  .btn-primary:hover { background: #333; }
+  .btn-outline { background: transparent; color: var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: var(--warm-white); }
+  .btn-accent { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-accent:hover { background: #a83d24; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 32px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--warm-white);
+    transition: background 0.15s;
+  }
+
+  .section-header:hover { background: #F0EBE0; }
+
+  .section-title-wrap { display: flex; align-items: center; gap: 14px; }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .section-toggle {
+    font-size: 20px;
+    color: var(--mid);
+    transition: transform 0.2s;
+  }
+
+  .section.open .section-toggle { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    border-top: 1px solid #E8E2D6;
+    background: var(--warm-white);
+  }
+
+  .section.open .section-body { display: block; }
+
+  /* VERIF TABLE HEADER */
+  .verif-col-header {
+    display: grid;
+    grid-template-columns: 1fr 56px 56px 56px;
+    padding: 6px 20px;
+    background: #F0EBE0;
+    border-bottom: 1px solid #E8E2D6;
+  }
+
+  .verif-col-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .verif-col-label.ok  { color: var(--ok); }
+  .verif-col-label.nok { color: var(--nok); }
+  .verif-col-label.na  { color: var(--na); }
+  .verif-col-label:first-child { text-align: left; color: var(--mid); }
+
+  /* VERIF ITEM ROW */
+  .item {
+    display: grid;
+    grid-template-columns: 1fr 56px 56px 56px;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background 0.1s;
+    border-bottom: 1px solid #F0EBE0;
+    cursor: default;
+  }
+
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: #F8F4EE; }
+
+  .item.new-item { background: #F0F7F2; }
+  .item.new-item:hover { background: #E8F2EC; }
+
+  .item-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 400;
+    padding-right: 12px;
+  }
+
+  .item.new-item .item-text {
+    color: var(--ok);
+    font-weight: 500;
+  }
+
+  .item-note {
+    font-size: 11px;
+    color: var(--mid);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  /* OK/NOK/NA checkboxes */
+  .verif-checks {
+    display: contents;
+  }
+
+  .verif-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #C8C0B0;
+    border-radius: 2px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 12px;
+    font-weight: 700;
+    color: transparent;
+    user-select: none;
+  }
+
+  .check-box.checked-ok  { background: var(--ok);  border-color: var(--ok);  color: white; }
+  .check-box.checked-nok { background: var(--nok); border-color: var(--nok); color: white; }
+  .check-box.checked-na  { background: var(--na);  border-color: var(--na);  color: white; }
+
+  /* NOTES */
+  .notes-row {
+    padding: 8px 20px 12px;
+    border-top: 1px solid #E8E2D6;
+    background: #FAFAF6;
+  }
+
+  .notes-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 6px;
+  }
+
+  .notes-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1px solid #E8E2D6;
+    border-radius: 2px;
+    background: var(--warm-white);
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+    padding: 8px 12px;
+    resize: vertical;
+    min-height: 48px;
+    transition: border-color 0.2s;
+  }
+
+  .notes-input:focus { border-color: var(--ink); }
+  .notes-input::placeholder { color: #C8C0B0; }
+
+  /* SUMMARY */
+  .summary-panel {
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    padding: 24px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .summary-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 520px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
+
+  .summary-stat {
+    padding: 12px 16px;
+    border-radius: 2px;
+    border: 1px solid #E8E2D6;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--ink);
+  }
+
+  .stat-value.ok  { color: var(--ok); }
+  .stat-value.nok { color: var(--nok); }
+
+  .result-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .result-btn {
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1.5px solid #C8C0B0;
+    background: var(--warm-white);
+    color: var(--mid);
+    transition: all 0.15s;
+  }
+
+  .result-btn.selected-approved {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: white;
+  }
+
+  .result-btn.selected-action {
+    background: var(--nok);
+    border-color: var(--nok);
+    color: white;
+  }
+
+  /* SUBMIT PANEL */
+  .submit-panel {
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    padding: 28px 24px;
+    margin-top: 16px;
+  }
+
+  .submit-panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .submit-panel-sub {
+    font-size: 13px;
+    color: var(--mid);
+    margin-bottom: 24px;
+  }
+
+  .field-group { margin-bottom: 18px; }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    border: 1.5px solid #C8C0B0;
+    border-radius: 2px;
+    background: var(--cream);
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus { border-color: var(--ink); }
+  .field-input::placeholder { color: #C8C0B0; }
+
+  .submit-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .btn-submit {
+    padding: 12px 28px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-submit:hover { background: #333; }
+  .btn-submit:disabled { background: #AAA49A; border-color: #AAA49A; cursor: not-allowed; }
+
+  .submit-status { font-size: 13px; color: var(--mid); flex: 1; }
+  .submit-status.success { color: #1A6B3A; font-weight: 500; }
+  .submit-status.error { color: var(--accent); }
+
+  .footer {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid #C8C0B0;
+    color: var(--mid);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    margin-top: 40px;
+  }
+
+  .footer strong {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  @media print {
+    .controls { display: none; }
+    .section-body { display: block !important; }
+    .section-toggle { display: none; }
+    body { background: white; }
+    .submit-panel { display: none; }
+    .summary-panel { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-tag">Alojamento Local</div>
+    <h1>Verificação<br><em>Pós-Limpeza</em></h1>
+    <p class="header-sub">Inspeção de qualidade após cada limpeza</p>
+  </header>
+
+  <div class="apt-panel">
+    <div class="apt-field">
+      <div class="apt-icon">🏠</div>
+      <div style="flex:1">
+        <div class="apt-label">Apartamento</div>
+        <input class="apt-input" id="apt-input" type="text" placeholder="Ex: Apto 3B" autocomplete="off" oninput="saveApt()">
+      </div>
+    </div>
+    <div class="apt-field">
+      <div class="apt-icon" style="background:#E8F0FF">👤</div>
+      <div style="flex:1">
+        <div class="apt-label">Verificado por</div>
+        <input class="apt-input" id="verif-input" type="text" placeholder="Nome do verificador" autocomplete="off" oninput="saveApt()">
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="legend-title">Legenda</span>
+    <span class="leg-item leg-ok">✓ OK — Conforme</span>
+    <span class="leg-item leg-nok">✗ NOK — Não conforme</span>
+    <span class="leg-item leg-na">— N/A — Não aplicável</span>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" onclick="expandAll()">Expandir Tudo</button>
+    <button class="btn btn-outline" onclick="collapseAll()">Recolher Tudo</button>
+    <button class="btn btn-accent" onclick="resetAll()">Reiniciar</button>
+    <button class="btn btn-outline" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="summary-panel">
+    <div class="summary-title">Resumo da Verificação</div>
+    <div class="summary-grid">
+      <div class="summary-stat">
+        <div class="stat-label">Total OK</div>
+        <div class="stat-value ok" id="count-ok">0</div>
+      </div>
+      <div class="summary-stat">
+        <div class="stat-label">Total NOK</div>
+        <div class="stat-value nok" id="count-nok">0</div>
+      </div>
+      <div class="summary-stat">
+        <div class="stat-label">N/A</div>
+        <div class="stat-value" id="count-na">0</div>
+      </div>
+    </div>
+    <div class="stat-label" style="margin-bottom:10px">Resultado Geral</div>
+    <div class="result-row">
+      <button class="result-btn" id="btn-approved" onclick="setResult('approved')">✓ Aprovado</button>
+      <button class="result-btn" id="btn-action" onclick="setResult('action')">⚠ Requer Ação</button>
+    </div>
+  </div>
+
+  <div class="submit-panel">
+    <div class="submit-panel-title">Submeter Relatório</div>
+    <div class="submit-panel-sub">Preenche os dados e envia o relatório de verificação por email.</div>
+    <div class="field-group">
+      <label class="field-label" for="verif-name">Nome do verificador</label>
+      <input class="field-input" id="verif-name" type="text" placeholder="Nome completo" autocomplete="off">
+    </div>
+    <div class="submit-row">
+      <button class="btn-submit" onclick="submitReport()" id="submit-btn">
+        <span>✉</span> Enviar Relatório
+      </button>
+      <span class="submit-status" id="submit-status"></span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Alojamento Local</strong><br>
+    Ficha de verificação pós-limpeza — Controlo de qualidade
+  </div>
+
+</div>
+
+<script>
+const sections = [
+  {
+    icon: "🏠", color: "#2D5A4E",
+    title: "Casa de Banho",
+    items: [
+      { text: "WC limpo e desinfetado (exterior, interior, tampa, borracha)" },
+      { text: "Chuveiro / banheira sem calcário, sem cabelos, sem resíduos" },
+      { text: "Box do chuveiro (vidro limpo, borracha e calhas sem sujidade)" },
+      { text: "Lavatório e torneira limpos e sem calcário" },
+      { text: "Espelho limpo e sem marcas" },
+      { text: "Chão lavado e seco, incluindo cantos e juntas" },
+      { text: "Tapete de banho limpo e bem colocado" },
+      { text: "Exaustão/ventilação limpa" },
+      { text: "Toalhas repostas e dobradas corretamente" },
+      { text: "Amenidades repostas (gel, condicionador, loção, sabonete, kit, discos)" },
+      { text: "Papel higiénico reposto (mínimo 4 rolos)" },
+      { text: "Vela + fósforos + caixa de lenços repostos" },
+      { text: "Caixote com saqueta nova" },
+      { text: "Armário organizado com secador de cabelo" },
+    ]
+  },
+  {
+    icon: "🛋️", color: "#4A3728",
+    title: "Sala de Estar",
+    items: [
+      { text: "Sofá(s) aspirado(s), sem manchas, almofadas alinhadas" },
+      { text: "Sofá-cama arrumado ou feito com roupa limpa" },
+      { text: "Mesa de jantar limpa e cadeiras alinhadas" },
+      { text: "Mesa de centro e laterais sem pó e sem marcas" },
+      { text: "TV, controlo remoto e cabos limpos e a funcionar" },
+      { text: "Janelas e vidros limpos, sem marcas" },
+      { text: "Cortinas/estores sem pó, bem colocados" },
+      { text: "Lâmpadas e apliques a funcionar" },
+      { text: "Chão aspirado e lavado, sem cabelos ou resíduos" },
+      { text: "Decoração, quadros e prateleiras sem pó" },
+    ]
+  },
+  {
+    icon: "🛏️", color: "#5C2D6B",
+    title: "Quartos",
+    items: [
+      { text: "Camas feitas com roupa lavada, engomada e bem esticada" },
+      { text: "Resguardos e capas de almofadas colocados corretamente" },
+      { text: "Cabeceiras, mesas de cabeceira e candeeiros sem pó" },
+      { text: "Roupeiro limpo por fora, interior organizado e sem objetos esquecidos" },
+      { text: "Gavetas e cabides verificados — sem pertences de hóspedes anteriores" },
+      { text: "Espelhos limpos e sem marcas" },
+      { text: "Janelas e persianas/estores limpos" },
+      { text: "Almofadas e mantas extras repostas" },
+      { text: "TV e controlo remoto a funcionar (se aplicável)" },
+      { text: "Chão aspirado e lavado, sem cabelos ou resíduos" },
+    ]
+  },
+  {
+    icon: "🍳", color: "#1E3A5F",
+    title: "Cozinha",
+    items: [
+      { text: "Bancada e salpicos da parede limpos e secos" },
+      { text: "Frigorífico limpo por dentro e por fora, sem cheiros" },
+      { text: "Fogão / placa — bicos, grelhas e superfície limpos" },
+      { text: "Exaustor limpo (exterior e filtros)" },
+      { text: "Forno limpo por dentro e por fora" },
+      { text: "Micro-ondas limpo por dentro e por fora" },
+      { text: "Máquina de café limpa (exterior, tabuleiro, resíduos)" },
+      { text: "Chaleira e torradeira limpas" },
+      { text: "Máquina de lavar louça limpa (exterior e filtro)" },
+      { text: "Loiça, talheres e utensílios lavados e arrumados" },
+      { text: "Espremedor e varinha mágica limpos e no lugar" },
+      { text: "Lava-loiça e torneira sem calcário e sem resíduos" },
+      { text: "Armários limpos por fora — interior organizado" },
+      { text: "Cápsulas (roupa + louça), detergente, esponja, panos repostos" },
+      { text: "Rolo de cozinha, guardanapos e sacos de lixo repostos" },
+      { text: "Chão lavado, seco e sem resíduos sob os móveis" },
+    ]
+  },
+  {
+    icon: "🚪", color: "#2D5A4E",
+    title: "Entrada e Corredor",
+    items: [
+      { text: "Porta de entrada limpa (maçaneta, vidro, borracha)" },
+      { text: "Espelho e superfícies reflexivas sem marcas" },
+      { text: "Cabides, prateleiras e consola sem pó" },
+      { text: "Tapete aspirado ou lavado" },
+      { text: "Caixotes com saquetas novas" },
+      { text: "Chão lavado e seco" },
+    ]
+  },
+  {
+    icon: "🌿", color: "#3D5C2A",
+    title: "Áreas Comuns e Varandas",
+    items: [
+      { text: "Varanda/terraço varrido e pavimento lavado" },
+      { text: "Mobiliário exterior limpo" },
+      { text: "Plantas regadas e em bom estado" },
+      { text: "Portas de vidro de correr e calhas limpas" },
+    ]
+  },
+  {
+    icon: "⚙️", color: "#1A4A5C",
+    title: "Equipamentos e Funcionamento",
+    items: [
+      { text: "Quadro elétrico verificado — todos os disjuntores ligados e sem disparos", isNew: true },
+      { text: "Wi-Fi a funcionar e password visível para hóspedes" },
+      { text: "TV sala a funcionar (imagem, som, controlo remoto)" },
+      { text: "TV quarto(s) a funcionar (se aplicável)" },
+      { text: "Ar condicionado / aquecimento a funcionar" },
+      { text: "Todas as lâmpadas a funcionar — nenhuma fundida" },
+      { text: "Fechadura da porta principal a funcionar bem" },
+      { text: "Cofre / caixa de chaves a funcionar (código correto)" },
+      { text: "Máquina de lavar roupa a funcionar" },
+      { text: "Máquina de lavar louça a funcionar" },
+      { text: "Frigorífico e congelador a funcionar" },
+      { text: "Fogão / placa a funcionar (todos os bicos/zonas)" },
+      { text: "Detetor de fumo a funcionar (testar)" },
+      { text: "Extintor presente e dentro do prazo de validade" },
+      { text: "Água quente a funcionar (testar brevemente)" },
+      { text: "Tomadas e carregadores (USB, etc.) disponíveis" },
+    ]
+  },
+  {
+    icon: "🎁", color: "#B8923A",
+    title: "Reposição para os Hóspedes",
+    items: [
+      { text: "Sal, pimenta e azeite repostos" },
+      { text: "Cereais, massa e arroz repostos" },
+      { text: "Garrafa de água no frigorífico" },
+      { text: "Gelo no congelador" },
+      { text: "Fruta fresca na fruteira" },
+      { text: "Caixa com mimo na mesa" },
+      { text: "Manual de boas-vindas e informações locais visíveis" },
+    ]
+  },
+  {
+    icon: "🔍", color: "#7A3B1E",
+    title: "Estado Geral e Danos",
+    items: [
+      { text: "Paredes sem marcas, riscos ou danos visíveis" },
+      { text: "Mobiliário sem danos, riscos ou peças partidas" },
+      { text: "Loiça, copos e utensílios sem lascas ou peças partidas" },
+      { text: "Roupa de cama e toalhas sem rasgos, manchas permanentes ou desgaste excessivo" },
+      { text: "Janelas e vidros sem estilhaços ou fissuras" },
+      { text: "Casas de banho sem azulejos partidos, fugas ou humidade excessiva" },
+      { text: "Apartamento bem arejado antes de fechar" },
+      { text: "Todas as janelas e portas fecham e trancam bem" },
+      { text: "Fotografias do estado do apartamento tiradas", note: "Guardar com data, hora e identificação do apartamento" },
+    ]
+  },
+];
+
+// State: { 'si-ii': 'ok' | 'nok' | 'na' | null }
+let state = {};
+let verifResult = null;
+let notes = {};
+
+function saveApt() {
+  try {
+    localStorage.setItem('verif-apt', document.getElementById('apt-input').value);
+    localStorage.setItem('verif-by', document.getElementById('verif-input').value);
+  } catch(e) {}
+}
+
+function loadApt() {
+  try {
+    const a = localStorage.getItem('verif-apt');
+    const b = localStorage.getItem('verif-by');
+    if (a) document.getElementById('apt-input').value = a;
+    if (b) document.getElementById('verif-input').value = b;
+  } catch(e) {}
+}
+
+function render() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  sections.forEach((sec, si) => {
+    const div = document.createElement('div');
+    div.className = 'section open';
+    div.id = `sec-${si}`;
+    div.style.animationDelay = `${si * 0.05}s`;
+
+    const itemsHTML = sec.items.map((item, ii) => {
+      const val = state[`${si}-${ii}`];
+      const isNew = item.isNew ? ' new-item' : '';
+      return `
+        <div class="item${isNew}" id="item-${si}-${ii}">
+          <div>
+            <div class="item-text">${item.text}</div>
+            ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+          </div>
+          <div class="verif-check">
+            <div class="check-box${val==='ok'?' checked-ok':''}" onclick="setCheck(${si},${ii},'ok')" title="OK">✓</div>
+          </div>
+          <div class="verif-check">
+            <div class="check-box${val==='nok'?' checked-nok':''}" onclick="setCheck(${si},${ii},'nok')" title="NOK">✗</div>
+          </div>
+          <div class="verif-check">
+            <div class="check-box${val==='na'?' checked-na':''}" onclick="setCheck(${si},${ii},'na')" title="N/A">—</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="section-header" onclick="toggleSection(${si})">
+        <div class="section-title-wrap">
+          <div class="section-icon" style="background:${sec.color}20; color:${sec.color}">${sec.icon}</div>
+          <div><div class="section-title">${sec.title}</div></div>
+        </div>
+        <span class="section-toggle">▾</span>
+      </div>
+      <div class="section-body">
+        <div class="verif-col-header">
+          <div class="verif-col-label">Item a verificar</div>
+          <div class="verif-col-label ok">OK</div>
+          <div class="verif-col-label nok">NOK</div>
+          <div class="verif-col-label na">N/A</div>
+        </div>
+        ${itemsHTML}
+        <div class="notes-row">
+          <div class="notes-label">Notas — ${sec.title}</div>
+          <textarea class="notes-input" placeholder="Observações..." oninput="saveNote(${si}, this.value)">${notes[si] || ''}</textarea>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+    if (localStorage.getItem(`verif-open-${si}`) === 'false') div.classList.remove('open');
+  });
+  updateSummary();
+}
+
+function setCheck(si, ii, val) {
+  const key = `${si}-${ii}`;
+  state[key] = (state[key] === val) ? null : val;
+  saveState(); render();
+}
+
+function toggleSection(si) {
+  const el = document.getElementById(`sec-${si}`);
+  localStorage.setItem(`verif-open-${si}`, el.classList.toggle('open'));
+}
+
+function expandAll() {
+  sections.forEach((_, si) => {
+    document.getElementById(`sec-${si}`).classList.add('open');
+    localStorage.setItem(`verif-open-${si}`, 'true');
+  });
+}
+
+function collapseAll() {
+  sections.forEach((_, si) => {
+    document.getElementById(`sec-${si}`).classList.remove('open');
+    localStorage.setItem(`verif-open-${si}`, 'false');
+  });
+}
+
+function resetAll() {
+  if (!confirm('Tens a certeza? Toda a verificação será apagada.')) return;
+  state = {}; notes = {}; verifResult = null;
+  saveState(); render(); updateResultBtns();
+}
+
+function saveNote(si, val) {
+  notes[si] = val;
+  try { localStorage.setItem('verif-notes', JSON.stringify(notes)); } catch(e) {}
+}
+
+function updateSummary() {
+  let ok = 0, nok = 0, na = 0;
+  Object.values(state).forEach(v => {
+    if (v === 'ok') ok++;
+    else if (v === 'nok') nok++;
+    else if (v === 'na') na++;
+  });
+  document.getElementById('count-ok').textContent = ok;
+  document.getElementById('count-nok').textContent = nok;
+  document.getElementById('count-na').textContent = na;
+  window._ok = ok; window._nok = nok; window._na = na;
+}
+
+function setResult(r) {
+  verifResult = (verifResult === r) ? null : r;
+  updateResultBtns();
+  try { localStorage.setItem('verif-result', verifResult || ''); } catch(e) {}
+}
+
+function updateResultBtns() {
+  document.getElementById('btn-approved').className = 'result-btn' + (verifResult === 'approved' ? ' selected-approved' : '');
+  document.getElementById('btn-action').className   = 'result-btn' + (verifResult === 'action'   ? ' selected-action'   : '');
+}
+
+function saveState() {
+  try { localStorage.setItem('verif-state', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('verif-state');   if (s) state = JSON.parse(s);
+    const n = localStorage.getItem('verif-notes');   if (n) notes = JSON.parse(n);
+    const r = localStorage.getItem('verif-result');  if (r) verifResult = r;
+  } catch(e) { state = {}; notes = {}; }
+}
+
+function buildEmailBody() {
+  const apt    = document.getElementById('apt-input').value   || 'Não especificado';
+  const verif  = document.getElementById('verif-input').value || 'Não especificado';
+  const name   = document.getElementById('verif-name').value  || verif;
+  const now    = new Date().toLocaleString('pt-PT');
+  const result = verifResult === 'approved' ? 'APROVADO' : verifResult === 'action' ? 'REQUER AÇÃO' : 'Não definido';
+
+  let body = `RELATÓRIO DE VERIFICAÇÃO PÓS-LIMPEZA\n${'='.repeat(40)}\n\n`;
+  body += `Apartamento: ${apt}\nVerificado por: ${name}\nData/Hora: ${now}\nResultado: ${result}\n`;
+  body += `OK: ${window._ok || 0}  |  NOK: ${window._nok || 0}  |  N/A: ${window._na || 0}\n\n`;
+
+  sections.forEach((sec, si) => {
+    body += `\n${sec.icon} ${sec.title}\n${'-'.repeat(32)}\n`;
+    sec.items.forEach((item, ii) => {
+      const v = state[`${si}-${ii}`];
+      const mark = v === 'ok' ? '✓ OK ' : v === 'nok' ? '✗ NOK' : v === 'na' ? '— N/A' : '  ???';
+      body += `${mark}  ${item.text}\n`;
+    });
+    if (notes[si]) body += `Notas: ${notes[si]}\n`;
+  });
+
+  return body;
+}
+
+const NOTION_TOKEN = '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';
+const NOTION_DB_ID = '353c5d87d06b80c5a334d4856048f3a6';
+const WORKER_URL   = 'https://notion-proxy.ana-2b3.workers.dev';
+
+async function submitReport() {
+  const name = document.getElementById('verif-name').value.trim();
+  const apt  = document.getElementById('apt-input').value.trim();
+  const status = document.getElementById('submit-status');
+  const btn    = document.getElementById('submit-btn');
+  if (!name) {
+    status.textContent = 'Por favor insere o teu nome.';
+    status.className = 'submit-status error'; return;
+  }
+  btn.disabled = true;
+  status.textContent = 'A enviar...';
+  status.className = 'submit-status';
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: NOTION_TOKEN,
+        payload: {
+          parent: { database_id: NOTION_DB_ID },
+          properties: {
+            Apartamento: { title: [{ text: { content: apt || 'Não especificado' } }] },
+            Empregada:   { rich_text: [{ text: { content: name } }] },
+            Data:        { date: { start: today } },
+            Tipo:        { select: { name: 'Verificação' } },
+            Relatório:   { rich_text: [{ text: { content: buildEmailBody().slice(0, 2000) } }] },
+          }
+        }
+      }),
+    });
+    if (res.ok) {
+      status.textContent = '✓ Relatório guardado no Notion!';
+      status.className = 'submit-status success';
+    } else {
+      const err = await res.json();
+      status.textContent = 'Erro: ' + (err.message || res.status);
+      status.className = 'submit-status error';
+    }
+  } catch(e) {
+    status.textContent = 'Erro de rede. Verifica a ligação.';
+    status.className = 'submit-status error';
+  }
+  btn.disabled = false;
+}
+
+loadState(); loadApt(); render(); updateResultBtns();
+</script>
+</body>
+</html>

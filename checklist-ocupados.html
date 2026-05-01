@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Limpeza — Apartamento Ocupado</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FDFAF4;
+    --ink: #1A1814;
+    --mid: #6B6560;
+    --accent: #C84B2F;
+    --accent-light: #F0D5CE;
+    --gold: #B8923A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    text-align: center;
+    padding: 48px 0 40px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 32px;
+  }
+
+  .header-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--mid);
+    margin-top: 12px;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  /* APARTMENT PANEL */
+  .apt-panel {
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .apt-panel-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .apt-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-light);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .apt-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+
+  .apt-input {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+    border-bottom: 1.5px solid #C8C0B0;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .apt-input:focus { border-bottom-color: var(--accent); }
+  .apt-input::placeholder { color: #C8C0B0; font-style: italic; }
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1.5px solid var(--ink);
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--ink); color: var(--warm-white); }
+  .btn-primary:hover { background: #333; }
+  .btn-outline { background: transparent; color: var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: var(--warm-white); }
+  .btn-accent { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-accent:hover { background: #a83d24; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+  }
+
+  .legend-title {
+    width: 100%;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 32px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--warm-white);
+    transition: background 0.15s;
+  }
+
+  .section-header:hover { background: #F0EBE0; }
+
+  .section-title-wrap { display: flex; align-items: center; gap: 14px; }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .section-toggle {
+    font-size: 20px;
+    color: var(--mid);
+    transition: transform 0.2s;
+  }
+
+  .section.open .section-toggle { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    padding: 4px 0 12px;
+    border-top: 1px solid #E8E2D6;
+    background: var(--warm-white);
+  }
+
+  .section.open .section-body { display: block; }
+
+  /* ITEMS */
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .item:hover { background: #F0EBE0; }
+
+  .item.done .item-text { text-decoration: line-through; color: #AAA49A; }
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #C8C0B0;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: white;
+  }
+
+  .item.done .checkbox { background: var(--accent); border-color: var(--accent); }
+
+  .checkmark { display: none; color: white; font-size: 11px; font-weight: 700; }
+  .item.done .checkmark { display: block; }
+
+  .item-text { font-size: 14px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+
+  .item-note { font-size: 11px; color: var(--mid); font-style: italic; margin-top: 2px; }
+
+  .priority {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .cloth {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px 2px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .cloth-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .cloth-blue   { background: #DCEEFF; color: #1A5FA8; }
+  .cloth-blue   .cloth-dot { background: #2176CC; }
+  .cloth-yellow { background: #FFF8D6; color: #8A6800; }
+  .cloth-yellow .cloth-dot { background: #E0AC00; }
+  .cloth-green  { background: #D9F5E8; color: #1A6B3A; }
+  .cloth-green  .cloth-dot { background: #1FAF5A; }
+  .cloth-pink   { background: #FFE0EC; color: #A0184A; }
+  .cloth-pink   .cloth-dot { background: #E0256A; }
+
+  .weekly-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 6px;
+    background: #EEF0FF;
+    color: #3A3AAA;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* SUBMIT PANEL */
+  .submit-panel {
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--warm-white);
+    padding: 28px 24px;
+    margin-top: 16px;
+  }
+
+  .submit-panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .submit-panel-sub { font-size: 13px; color: var(--mid); margin-bottom: 24px; }
+
+  .field-group { margin-bottom: 18px; }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    border: 1.5px solid #C8C0B0;
+    border-radius: 2px;
+    background: var(--cream);
+    color: var(--ink);
+    outline: none;
+    width: 100%;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus { border-color: var(--ink); }
+  .field-input::placeholder { color: #C8C0B0; }
+
+  .submit-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .btn-submit {
+    padding: 12px 28px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-submit:hover { background: #333; }
+  .btn-submit:disabled { background: #AAA49A; border-color: #AAA49A; cursor: not-allowed; }
+
+  .submit-status { font-size: 13px; color: var(--mid); flex: 1; }
+  .submit-status.success { color: #1A6B3A; font-weight: 500; }
+  .submit-status.error { color: var(--accent); }
+
+  .footer {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid #C8C0B0;
+    color: var(--mid);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    margin-top: 40px;
+  }
+
+  .footer strong {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  @media print {
+    .controls { display: none; }
+    .section-body { display: block !important; }
+    .section-toggle { display: none; }
+    body { background: white; }
+    .submit-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-tag">Alojamento Local</div>
+    <h1>Checklist de<br><em>Limpeza</em></h1>
+    <p class="header-sub">Limpeza de manutenção em apartamento ocupado</p>
+  </header>
+
+  <div class="apt-panel">
+    <div class="apt-panel-left">
+      <div class="apt-icon">🏠</div>
+      <div style="flex:1">
+        <div class="apt-label">Apartamento</div>
+        <input class="apt-input" id="apt-input" type="text" placeholder="Ex: Apto 3B — Rua das Flores" autocomplete="off" oninput="saveApt()">
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" onclick="expandAll()">Expandir Tudo</button>
+    <button class="btn btn-outline" onclick="collapseAll()">Recolher Tudo</button>
+    <button class="btn btn-accent" onclick="resetAll()">Reiniciar Checklist</button>
+    <button class="btn btn-outline" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Código de Panos de Limpeza</div>
+    <span class="cloth cloth-blue"><span class="cloth-dot"></span>Azul — Pó (superfícies gerais)</span>
+    <span class="cloth cloth-yellow"><span class="cloth-dot"></span>Amarelo — Vidros &amp; espelhos</span>
+    <span class="cloth cloth-green"><span class="cloth-dot"></span>Verde — Cozinha</span>
+    <span class="cloth cloth-pink"><span class="cloth-dot"></span>Rosa — Casa de banho</span>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="submit-panel">
+    <div class="submit-panel-title">Submeter Relatório</div>
+    <div class="submit-panel-sub">Preenche os dados e envia o relatório de limpeza por email.</div>
+    <div class="field-group">
+      <label class="field-label" for="cleaner-name">O teu nome</label>
+      <input class="field-input" id="cleaner-name" type="text" placeholder="Nome de quem fez a limpeza" autocomplete="off">
+    </div>
+    <div class="submit-row">
+      <button class="btn-submit" onclick="submitReport()" id="submit-btn">
+        <span>✉</span> Enviar Relatório
+      </button>
+      <span class="submit-status" id="submit-status"></span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Alojamento Local</strong><br>
+    Limpeza de manutenção — Apartamento Ocupado
+  </div>
+
+</div>
+
+<script>
+function clothLabel(c) {
+  return { blue: 'Pano Azul', yellow: 'Pano Amarelo', green: 'Pano Verde', pink: 'Pano Rosa' }[c] || c;
+}
+
+const sections = [
+  {
+    icon: "⚡", color: "#C84B2F",
+    title: "Prioritário — Início da Limpeza",
+    items: [
+      { text: "Esvaziar todos os caixotes do lixo do apartamento", priority: true },
+      { text: "Recolher sacos de lixo e levar para o exterior", priority: true },
+      { text: "Recolher toalhas usadas para lavandaria", priority: true },
+      { text: "Meter a loiça suja na máquina de lavar louça e ligar", priority: true },
+      { text: "Aspirar sofás, almofadas e zonas de veludo", priority: true },
+      { text: "Limpar marcas visíveis nas paredes de todas as divisões", priority: true, cloth: "blue" },
+    ]
+  },
+  {
+    icon: "🚿", color: "#3D5C2A",
+    title: "Casa de Banho",
+    items: [
+      { text: "Limpar e desinfetar o WC (exterior, interior, tampa, borracha)", priority: true, cloth: "pink" },
+      { text: "Limpar e desinfetar a piaçaba e o suporte", priority: true, cloth: "pink" },
+      { text: "Limpar e desinfetar o chuveiro ou banheira", priority: true, cloth: "pink" },
+      { text: "Repor toalhas limpas", priority: true },
+      { text: "Repor gel de banho no chuveiro", priority: true },
+      { text: "Repor amenidades em falta: condicionador, loção, sabonete, kit de higiene, discos de algodão", priority: true },
+      { text: "Repor papel higiénico em falta" },
+      { text: "Repor vela / fósforos se necessário" },
+      { text: "Repor caixa de lenços se necessário" },
+      { text: "Limpar e desinfetar o lavatório e torneira", cloth: "pink" },
+      { text: "Limpar o espelho", cloth: "yellow" },
+      { text: "Limpar box do chuveiro (vidro, borracha, calhas)", cloth: "yellow" },
+      { text: "Remover calcário de torneiras e duche", cloth: "pink" },
+      { text: "Lavar e secar o chão — incluindo cantos e juntas", weekly: true },
+      { text: "Lavar tapete de banho ou substituir", weekly: true },
+      { text: "Verificar e repor saquetas de lixo no caixote", weekly: true },
+      { text: "Limpar a exaustão/ventilação", cloth: "blue", weekly: true },
+    ]
+  },
+  {
+    icon: "🛋️", color: "#4A3728",
+    title: "Sala de Estar",
+    items: [
+      { text: "Escovar veludo dos sofás e almofadas", cloth: "blue" },
+      { text: "Limpar mesa de jantar", cloth: "green" },
+      { text: "Limpar o painel da TV e controlo remoto", cloth: "blue" },
+      { text: "Limpar mesa de centro e laterais", cloth: "blue" },
+      { text: "Desempoar TV, consola e cabos", cloth: "blue" },
+      { text: "Limpar luzes, apliques e lâmpadas (desempoar)", cloth: "blue" },
+      { text: "Desempoar rodapés e sóculos", cloth: "blue" },
+      { text: "Desempoar quadros, prateleiras e decoração", cloth: "blue" },
+      { text: "Limpar janelas e vidros (interior)", cloth: "yellow" },
+      { text: "Verificar cortinas/estores — sacudir ou passar a vapor" },
+      { text: "Verificar lâmpadas e interruptores", cloth: "blue" },
+      { text: "Aspirar e lavar o chão" },
+    ]
+  },
+  {
+    icon: "🛏️", color: "#5C2D6B",
+    title: "Quartos",
+    items: [
+      { text: "Fazer as camas — trocar lençóis apenas se o hóspede solicitar", priority: true },
+      { text: "Não se tiram resguardos nem se mexe nos armários", note: "Respeitar privacidade do hóspede" },
+      { text: "Escovar cabeceira da cama e caldeirões", cloth: "blue" },
+      { text: "Limpar cabeceiras, mesas de cabeceira e candeeiros", cloth: "blue" },
+      { text: "Limpar luzes, apliques e lâmpadas (desempoar)", cloth: "blue" },
+      { text: "Limpar espelhos", cloth: "yellow" },
+      { text: "Aspirar e lavar o chão" },
+      { text: "Limpar janelas e persianas/estores", cloth: "yellow" },
+      { text: "Verificar e repor almofadas e mantas extras" },
+      { text: "Verificar TV do quarto e controlo remoto (se aplicável)", cloth: "blue" },
+    ]
+  },
+  {
+    icon: "🍳", color: "#1E3A5F",
+    title: "Cozinha",
+    items: [
+      { text: "Limpar bancada e salpicos da parede", priority: true, cloth: "green" },
+      { text: "Limpar a placa / fogão — bicos, grelhas e superfície", cloth: "green" },
+      { text: "Limpar o exaustor (exterior e filtros)", cloth: "green" },
+      { text: "Limpar a máquina de café — exterior, tabuleiro e resíduos", cloth: "green" },
+      { text: "Limpar o micro-ondas por dentro e por fora", cloth: "green" },
+      { text: "Limpar chaleira e torradeira", cloth: "green" },
+      { text: "Verificar frigorífico — retirar alimentos estragados", cloth: "green" },
+      { text: "Lavar e secar toda a loiça, talheres e utensílios" },
+      { text: "Verificar espremedor de citrinos — limpar e guardar no lugar" },
+      { text: "Verificar varinha mágica — limpar e guardar no lugar" },
+      { text: "Limpar a lava-loiça e torneira (remover calcário)", cloth: "green" },
+      { text: "Limpar luzes e apliques da cozinha", cloth: "blue", weekly: true },
+      { text: "Repor consumíveis em falta (cápsulas, detergente, esponja, panos, rolo, guardanapos)", weekly: true },
+      { text: "Repor sacos de lixo em falta", weekly: true },
+      { text: "Aspirar e lavar o chão (incluindo sob móveis)", weekly: true },
+      { text: "Secar o chão após lavagem", weekly: true },
+    ]
+  },
+  {
+    icon: "🚪", color: "#2D5A4E",
+    title: "Entrada e Corredor",
+    items: [
+      { text: "Repor sacos de lixo em todos os caixotes", priority: true },
+      { text: "Limpar a porta de entrada (maçaneta, vidro, borracha)", cloth: "yellow" },
+      { text: "Limpar espelho ou superfícies reflexivas", cloth: "yellow" },
+      { text: "Desempoar cabides, prateleiras e consola", cloth: "blue" },
+      { text: "Limpar interruptores de luz e tomadas", cloth: "blue" },
+      { text: "Verificar o estado do tapete (aspirar ou lavar)" },
+      { text: "Aspirar e lavar o chão" },
+    ]
+  },
+  {
+    icon: "🌿", color: "#3D5C2A",
+    title: "Áreas Comuns e Varandas",
+    items: [
+      { text: "Limpar varanda/terraço (varrer, lavar pavimento)" },
+      { text: "Limpar mobiliário exterior (mesa, cadeiras)", cloth: "blue" },
+      { text: "Verificar plantas — regar se necessário" },
+      { text: "Limpar portas de vidro de correr e calhas", cloth: "yellow" },
+    ]
+  },
+  {
+    icon: "🎁", color: "#B8923A",
+    title: "Reposição para os Hóspedes",
+    items: [
+      { text: "Verificar e repor sal, pimenta e azeite", priority: true },
+      { text: "Verificar e repor cereais se necessário" },
+      { text: "Encher garrafa de água e colocar no frigorífico" },
+      { text: "Repor o gelo no congelador" },
+      { text: "Colocar fruta fresca na fruteira se necessário" },
+    ]
+  },
+];
+
+let state = {};
+
+function saveApt() {
+  try { localStorage.setItem('ocup-apt', document.getElementById('apt-input').value); } catch(e) {}
+}
+
+function loadApt() {
+  try {
+    const v = localStorage.getItem('ocup-apt');
+    if (v) document.getElementById('apt-input').value = v;
+  } catch(e) {}
+}
+
+function render() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  sections.forEach((sec, si) => {
+    const div = document.createElement('div');
+    div.className = 'section open';
+    div.id = `sec-${si}`;
+    div.style.animationDelay = `${si * 0.05}s`;
+    div.innerHTML = `
+      <div class="section-header" onclick="toggleSection(${si})">
+        <div class="section-title-wrap">
+          <div class="section-icon" style="background:${sec.color}20; color:${sec.color}">${sec.icon}</div>
+          <div><div class="section-title">${sec.title}</div></div>
+        </div>
+        <span class="section-toggle">▾</span>
+      </div>
+      <div class="section-body">
+        ${sec.items.map((item, ii) => `
+          <div class="item${state[`${si}-${ii}`] ? ' done' : ''}" onclick="toggle(${si},${ii})">
+            <div class="checkbox"><span class="checkmark">✓</span></div>
+            <div>
+              <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+                <span class="item-text">${item.text}</span>
+                ${item.priority ? '<span class="priority">Prioritário</span>' : ''}
+                ${item.cloth ? `<span class="cloth cloth-${item.cloth}"><span class="cloth-dot"></span>${clothLabel(item.cloth)}</span>` : ''}
+                ${item.weekly ? '<span class="weekly-badge">Tarefa semanal</span>' : ''}
+              </div>
+              ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(div);
+    if (localStorage.getItem(`ocup-open-${si}`) === 'false') div.classList.remove('open');
+  });
+  updateProgress();
+}
+
+function toggle(si, ii) {
+  state[`${si}-${ii}`] = !state[`${si}-${ii}`];
+  saveState(); render();
+}
+
+function toggleSection(si) {
+  const el = document.getElementById(`sec-${si}`);
+  localStorage.setItem(`ocup-open-${si}`, el.classList.toggle('open'));
+}
+
+function expandAll() {
+  sections.forEach((_, si) => {
+    document.getElementById(`sec-${si}`).classList.add('open');
+    localStorage.setItem(`ocup-open-${si}`, 'true');
+  });
+}
+
+function collapseAll() {
+  sections.forEach((_, si) => {
+    document.getElementById(`sec-${si}`).classList.remove('open');
+    localStorage.setItem(`ocup-open-${si}`, 'false');
+  });
+}
+
+function resetAll() {
+  if (!confirm('Tens a certeza? Todas as tarefas serão desmarcadas.')) return;
+  state = {}; saveState(); render();
+}
+
+function updateProgress() {
+  let total = 0, done = 0;
+  sections.forEach((sec, si) => {
+    sec.items.forEach((_, ii) => { total++; if (state[`${si}-${ii}`]) done++; });
+  });
+  window._progressDone = done;
+  window._progressTotal = total;
+}
+
+function saveState() {
+  try { localStorage.setItem('ocup-state', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+  try { const s = localStorage.getItem('ocup-state'); if (s) state = JSON.parse(s); } catch(e) { state = {}; }
+}
+
+function buildEmailBody() {
+  const apt     = document.getElementById('apt-input').value   || 'Não especificado';
+  const cleaner = document.getElementById('cleaner-name').value || 'Não especificado';
+  const now     = new Date().toLocaleString('pt-PT');
+  const done    = window._progressDone || 0;
+  const total   = window._progressTotal || 0;
+  let body = `RELATÓRIO DE LIMPEZA — APARTAMENTO OCUPADO\n${'='.repeat(40)}\n\n`;
+  body += `Apartamento: ${apt}\nEmpregada: ${cleaner}\nData/Hora: ${now}\nTarefas concluídas: ${done} de ${total} (${Math.round(done/total*100)}%)\n\n`;
+  sections.forEach((sec, si) => {
+    const secDone = sec.items.filter((_, ii) => state[`${si}-${ii}`]).length;
+    body += `\n${sec.icon} ${sec.title} (${secDone}/${sec.items.length})\n${'-'.repeat(32)}\n`;
+    sec.items.forEach((item, ii) => { body += `${state[`${si}-${ii}`] ? '✓' : '✗'} ${item.text}\n`; });
+  });
+  return body;
+}
+
+const NOTION_TOKEN = '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';
+const NOTION_DB_ID = '353c5d87d06b80c5a334d4856048f3a6';
+const WORKER_URL   = 'https://notion-proxy.ana-2b3.workers.dev';
+
+async function submitReport() {
+  const cleanerName = document.getElementById('cleaner-name').value.trim();
+  const apt = document.getElementById('apt-input').value.trim();
+  const status = document.getElementById('submit-status');
+  const btn    = document.getElementById('submit-btn');
+  if (!cleanerName) {
+    status.textContent = 'Por favor insere o teu nome.';
+    status.className = 'submit-status error'; return;
+  }
+  btn.disabled = true;
+  status.textContent = 'A enviar...';
+  status.className = 'submit-status';
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: NOTION_TOKEN,
+        payload: {
+          parent: { database_id: NOTION_DB_ID },
+          properties: {
+            Apartamento: { title: [{ text: { content: apt || 'Não especificado' } }] },
+            Empregada:   { rich_text: [{ text: { content: cleanerName } }] },
+            Data:        { date: { start: today } },
+            Tipo:        { select: { name: 'Apartamento Ocupado' } },
+            Relatório:   { rich_text: [{ text: { content: buildEmailBody().slice(0, 2000) } }] },
+          }
+        }
+      }),
+    });
+    if (res.ok) {
+      status.textContent = '✓ Relatório guardado no Notion!';
+      status.className = 'submit-status success';
+    } else {
+      const err = await res.json();
+      status.textContent = 'Erro: ' + (err.message || res.status);
+      status.className = 'submit-status error';
+    }
+  } catch(e) {
+    status.textContent = 'Erro de rede. Verifica a ligação.';
+    status.className = 'submit-status error';
+  }
+  btn.disabled = false;
+}
+
+loadState(); loadApt(); render();
+</script>
+</body>
+</html>
